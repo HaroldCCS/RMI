@@ -18,7 +18,7 @@ public class BankServiceImpl extends UnicastRemoteObject implements BankService 
     private final String dbPass;
 
     public BankServiceImpl(String jdbcUrl, String dbUser, String dbPass) throws RemoteException {
-        super();
+        super(1098);   // puerto fijo: evita puerto dinámico que Docker no expone
         this.jdbcUrl = jdbcUrl;
         this.dbUser  = dbUser;
         this.dbPass  = dbPass;

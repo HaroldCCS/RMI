@@ -12,8 +12,10 @@ import com.bank.BankService;
 public class BankClient {
 
     public static void main(String[] args) {
-        String serverHost = "localhost";
-        int    serverPort = 1099;
+        String serverHost = System.getProperty("RMI_HOST",
+                               System.getenv().getOrDefault("RMI_HOST", "localhost"));
+        int    serverPort = Integer.parseInt(System.getProperty("RMI_PORT",
+                               System.getenv().getOrDefault("RMI_PORT", "1099")));
 
         System.out.println("[BankClient] Conectando a RMI en " + serverHost + ":" + serverPort);
 
@@ -25,6 +27,7 @@ public class BankClient {
                 Registry registry = LocateRegistry.getRegistry(serverHost, serverPort);
                 service = (BankService) registry.lookup("BankService");
                 System.out.println("[BankClient] Conectado al servidor RMI ✓");
+                service.getBalance("alice");
                 break;
             } catch (Exception e) {
                 System.out.printf("[BankClient] Intento %d/20 – servidor no disponible (%s)%n", i + 1, e.getMessage());

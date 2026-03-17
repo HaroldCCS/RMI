@@ -38,9 +38,10 @@ services:
       DB_NAME:     bank
       DB_USER:     bankuser
       DB_PASS:     bankpass
-      SERVER_HOST: server
+      SERVER_HOST: localhost
     ports:
-      - "1099:1099"
+      - "1099:1099"   # RMI Registry
+      - "1098:1098"   # RMI Object (puerto fijo exportado por BankServiceImpl)
 
   # ── Cliente Swing (GUI) ───────────────────────────────────────────────────
   # NOTA: Requiere servidor X11 en el host.

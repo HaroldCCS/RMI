@@ -66,9 +66,14 @@ public class WithdrawScreen extends JFrame {
         mainPanel.add(headerPanel, BorderLayout.NORTH);
 
         // Formulario
-        JPanel formPanel = new JPanel(new GridLayout(3, 1, 0, 10));
+        JPanel formPanel = new JPanel(new GridBagLayout());
         formPanel.setOpaque(false);
         formPanel.setBorder(new EmptyBorder(25, 0, 20, 0));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.gridx = 0;
+        gbc.weightx = 1.0;
 
         JLabel amtLabel = new JLabel("Monto a retirar ($)");
         amtLabel.setForeground(new Color(255, 200, 130));
@@ -79,6 +84,7 @@ public class WithdrawScreen extends JFrame {
         amtField.setForeground(Color.WHITE);
         amtField.setCaretColor(Color.WHITE);
         amtField.setFont(new Font("SansSerif", Font.PLAIN, 15));
+        amtField.setOpaque(true); // Asegurar visibilidad en macOS
         amtField.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(new Color(200, 120, 50), 1, true),
                 new EmptyBorder(8, 10, 8, 10)));
@@ -87,16 +93,25 @@ public class WithdrawScreen extends JFrame {
         resultLabel.setFont(new Font("SansSerif", Font.BOLD, 14));
         resultLabel.setForeground(Color.WHITE);
 
-        formPanel.add(amtLabel);
-        formPanel.add(amtField);
-        formPanel.add(resultLabel);
+        gbc.gridy = 0;
+        gbc.insets = new Insets(0, 0, 5, 0);
+        formPanel.add(amtLabel, gbc);
+
+        gbc.gridy = 1;
+        gbc.insets = new Insets(0, 0, 15, 0);
+        formPanel.add(amtField, gbc);
+
+        gbc.gridy = 2;
+        gbc.insets = new Insets(0, 0, 0, 0);
+        formPanel.add(resultLabel, gbc);
+        
         mainPanel.add(formPanel, BorderLayout.CENTER);
 
         // Botones
         JButton withdrawBtn = createButton("💸  Retirar",   new Color(200, 80, 0));
         JButton backBtn     = createButton("← Volver",     new Color(60, 40, 70));
 
-        withdrawBtn.addActionListener(e -> {
+        ActionListener doWithdraw = e -> {
             String raw = amtField.getText().trim().replace(",", ".");
             if (raw.isEmpty()) {
                 showError("Ingrese un monto.");
@@ -145,7 +160,10 @@ public class WithdrawScreen extends JFrame {
                     }
                 }
             }.execute();
-        });
+        };
+
+        withdrawBtn.addActionListener(doWithdraw);
+        amtField.addActionListener(doWithdraw); // Enter key support
 
         backBtn.addActionListener(e -> {
             dispose();
@@ -159,6 +177,9 @@ public class WithdrawScreen extends JFrame {
         mainPanel.add(btnPanel, BorderLayout.SOUTH);
 
         add(mainPanel);
+
+        // Autofocus al campo de monto
+        SwingUtilities.invokeLater(amtField::requestFocusInWindow);
     }
 
     private JButton createButton(String text, Color color) {

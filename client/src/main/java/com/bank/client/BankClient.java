@@ -12,6 +12,10 @@ import com.bank.BankService;
 public class BankClient {
 
     public static void main(String[] args) {
+        try {
+            javax.swing.UIManager.setLookAndFeel(javax.swing.UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception ignored) {}
+
         String serverHost = System.getProperty("RMI_HOST",
                                System.getenv().getOrDefault("RMI_HOST", "localhost"));
         int    serverPort = Integer.parseInt(System.getProperty("RMI_PORT",
